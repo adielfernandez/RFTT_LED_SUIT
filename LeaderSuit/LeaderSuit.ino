@@ -50,7 +50,7 @@ bool bFlicker = false;
 unsigned int flickerInterval = 100;
 int shortFlickerInterval = 100;
 int longFlickerInterval = 500;
-float lowFlickerBright = 0.5;
+float lowFlickerBright = 0.05;
 float highFlickerBright = 1.0;
 float flickerBrightness = 1.0;
 
@@ -63,12 +63,15 @@ bool flickerStates[] = { false, false, false, false, false };
 //SINE WAVE
 bool bSineWave = false;
 float sineSpeed = 3.0;
-float lowBright = 0.1;
-float highBright = 1.0;
+float sineLowBright = 0.1;
+float sineHighBright = 1.0;
 
 //TRAVELLING WAVE
 bool bTravelWave = false;
 float phaseDiff = TWO_PI;
+float travelSineSpeed = 5.0;
+float travelLowBright = 0.0f;
+float travelHighBright = 1.0f;
 
 //----------LED COLORS----------
 const int orange[]    = {255,  43,   0};
@@ -213,9 +216,13 @@ void loop() {
 
         bTravelWave = true;
 
-        phaseDiff = inputString.substring(1, inputString.length()).toFloat();
+        int firstComma = inputString.indexOf(',');
+        phaseDiff = inputString.substring(1, firstComma).toFloat();
+        travelSineSpeed = inputString.substring(firstComma + 1, inputString.length()).toFloat();
         Serial.print("Phase Difference: ");
-        Serial.println( phaseDiff );
+        Serial.print( phaseDiff );
+        Serial.print(", speed: ");
+        Serial.println( travelSineSpeed);
 
       }
 
@@ -242,7 +249,7 @@ void loop() {
     } else if ( prefix == ' ' ) {
 
       //turn off testing mode if we get a space
-      bTestingMode = false;
+      bTestingMode = !bTestingMode;
     }
 
     stringComplete = false;
@@ -332,6 +339,9 @@ void loop() {
         stripList[i].setBrightness(br);
       }
 
+      //turn off all other effects
+      allEffectsOff();
+
     }
 
     //--------------------SEGMENT 2--------------------
@@ -339,9 +349,6 @@ void loop() {
 
       Serial.println("[Segment2] Flicker");
 
-      //turn off all other effects
-      allEffectsOff();
-      
       //turn on flicker
       bFlicker = true;
 
@@ -364,10 +371,33 @@ void loop() {
 
     //--------------------SEGMENT 3--------------------
     else if ( timeNow < segment3_End ) {
+
+      Serial.println("[Segment3] Transition to Full Bright");
+
+      //All LEDs fade up from 0 to 50% brightness
+      int fadeUpDuration = 1000;
+      float br = map_clamp( timeNow, segment2_End, segment2_End + fadeUpDuration, 0.2, 1.0);
+
+      for (int i = 0; i < NUMSTRIPS; i++) {
+        stripList[i].setAllColor(orange[0], orange[1], orange[2]);
+        stripList[i].setBrightness(br);
+      }
+
+      //turn off all other effects
+      allEffectsOff();
+
+
     }
 
     //--------------------SEGMENT 4--------------------
     else if ( timeNow < segment4_End ) {
+
+      Serial.println("[Segment3] Pulse Full Bright, slow then fast ");
+
+      bSineWave = true;
+      sineSpeed = map_clamp( timeNow, segment3_End, segment4_End, 2.0, 8.0);
+      
+      
     }
 
     //--------------------SEGMENT 5--------------------
@@ -405,8 +435,8 @@ void loop() {
 
     //go through all the LEDs and set them to pulse in phase
 
-    float range = highBright - lowBright;
-    float midBright = lowBright + range / 2.0f;
+    float range = sineHighBright - sineLowBright;
+    float midBright = sineLowBright + range / 2.0f;
 
     //sine wave applied to ALL LEDs
     float sine = midBright + range / 2.0f * sin( sineSpeed * millis() / 1000.f );
@@ -428,17 +458,12 @@ void loop() {
 
     setAllDummyMode(true);
 
-    highBright = 0.0;
-    lowBright = 1.0;
-
-    float range = highBright - lowBright;
-    float midBright = lowBright + range / 2.0f;
+    float range = travelHighBright - travelLowBright;
+    float midBright = travelLowBright + range / 2.0f;
 
     //define now but set within the for loop
     //since each LED is given a different phase
     float sine;
-
-    sineSpeed = 6;
 
     //set the value of each of the leds to the sine with the phase proportional to
     //their height
@@ -447,7 +472,7 @@ void loop() {
 
         float phaseShift = map( stripList[i].heights[j], 0, maxHeight, 0.0f, phaseDiff * 1000.0f) / 1000.0f;
 
-        sine = midBright + range / 2.0f * sin( sineSpeed * millis() / 1000.f + phaseShift);
+        sine = midBright + range / 2.0f * sin( travelSineSpeed * millis() / 1000.f + phaseShift);
 
         stripList[i].setColorAt( j, lightBlue[0] * sine, lightBlue[1] * sine, lightBlue[2] * sine);
 
@@ -501,6 +526,8 @@ void loop() {
   //---------------FLICKER ANIMATION---------------
   if ( bFlicker ) {
 
+    setAllDummyMode(true);
+
     //randomly pick one or two strips to light then pick
     //another random interval for the next time
     if ( millis() - lastFlickerTime > flickerInterval ) {
@@ -513,14 +540,12 @@ void loop() {
       int randNum = floor( random(5) );
       flickerStates[randNum] = true;
 
-      flickerBrightness = random( lowFlickerBright, highFlickerBright );
-
+      //multiply by 100, get random, then divide by 100 to get floats
+      flickerBrightness = random( lowFlickerBright * 100, highFlickerBright * 100)/100.0f;
+      flickerInterval = random(shortFlickerInterval, longFlickerInterval);
+      
       lastFlickerTime = millis();
 
-      flickerInterval = random(shortFlickerInterval, longFlickerInterval);
-
-      //      Serial.print("New Interval: ");
-      //      Serial.println(flickerInterval);
     }
 
 
@@ -539,14 +564,12 @@ void loop() {
 
 
   //DEBUG PRINTING
-  //    Serial.print(stripList[2].timeNow );
-  //    Serial.print(", ");
-  //    Serial.print(stripList[2].rTarget );
-  //    Serial.print(", ");
-  //    Serial.print(stripList[2].gTarget );
-  //    Serial.print(", ");
-  //    Serial.println(stripList[2].bTarget );
-  //    delay(10);
+//    Serial.print(stripList[0].getRed(0));
+//    Serial.print(", ");
+//    Serial.print(stripList[0].getGreen(0));
+//    Serial.print(", ");
+//    Serial.println(stripList[0].getBlue(0));
+//    delay(10);
 
 
 
@@ -567,8 +590,8 @@ void loop() {
     //when trying to access the color values
     if ( thisLED < stripList[stripNum].numLEDs ) {
       leds.setPixel(i, stripList[stripNum].getRed(thisLED),
-                    stripList[stripNum].getGreen(thisLED),
-                    stripList[stripNum].getBlue(thisLED)   );
+                       stripList[stripNum].getGreen(thisLED),
+                       stripList[stripNum].getBlue(thisLED)   );
     }
 
   }

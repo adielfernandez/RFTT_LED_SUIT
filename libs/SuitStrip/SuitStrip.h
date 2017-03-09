@@ -43,15 +43,15 @@ class SuitStrip
     //heights array
     int heights[MAX_LEDS];
 
-    //CURRENT colors array
+    //target colors array
     float redArray[MAX_LEDS];
     float greenArray[MAX_LEDS];
     float blueArray[MAX_LEDS];
 
-    //TARGET colors array
-    float redTargets[MAX_LEDS];
-    float greenTargets[MAX_LEDS];
-    float blueTargets[MAX_LEDS];  
+    //output colors array
+    float redOut[MAX_LEDS];
+    float greenOut[MAX_LEDS];
+    float blueOut[MAX_LEDS];  
 
     unsigned long lastTriggerTimes[MAX_LEDS]; 
 

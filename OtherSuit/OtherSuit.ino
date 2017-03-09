@@ -92,11 +92,9 @@ const int yellow[]    = {255, 112,   0};
 //const int lightBlue[] = {135, 210, 231};
 const int lightBlue[] = {110, 180, 255};
 
-
 bool bTestingMode = false;
 bool bAnimating = false;
 unsigned long animationStartTime = 0;
-
 
 
 //-----Button input-----
@@ -321,32 +319,27 @@ void loop() {
 
     //SEGMENT TIME STAMPS (mult. by 1000 to get milliseconds)
 //    unsigned long segment0_End  = 1000 * 12.15;  //12.15 SECONDS
-//    unsigned long segment1_End  = 1000 * 20;
-//    unsigned long segment2_End  = 1000 * 27.3;
-//    unsigned long segment3_End  = 1000 * 52;
-//    unsigned long segment4_End  = 1000 * 72.1;
-//    unsigned long segment5_End  = 1000 * 76.19;
-//    unsigned long segment6_End  = 1000 * 85.19;
-//    unsigned long segment7_End  = 1000 * 98.02;
-//    unsigned long segment8_End  = 1000 * 106;
-//    unsigned long segment9_End  = 1000 * 122.22;
-//    unsigned long segment10_End = 1000 * 145.19;
-//    unsigned long segment11_End = 1000 * 152.22;
-//    unsigned long segment12_End = 1000 * 233.19;
-//    unsigned long segment13_End = 1000 * 283.03;
-//    unsigned long segment14_End = 1000 * 289.27;
-//    unsigned long segment15_End = 1000 * 337.10;
-//    unsigned long segment16_End = 1000 * 360;   //6 minutes
-//    unsigned long segment17_End = 10000000;  //"forever"
+//    unsigned long segment1_End  = 1000 * 52;
+//    unsigned long segment2_End  = 1000 * 72.10;
+//    unsigned long segment3_End  = 1000 * 85.19;
+//    unsigned long segment4_End  = 1000 * 98.02;
+//    unsigned long segment5_End  = 1000 * 129.20;
+//    unsigned long segment6_End  = 1000 * 138;
+//    unsigned long segment7_End  = 1000 * 203;
+//    unsigned long segment8_End  = 1000 * 230;
+//    unsigned long segment9_End  = 1000 * 289.27;
+//    unsigned long segment10_End = 1000 * 337.1;
+//    unsigned long segment11_End = 1000 * 360;
+//    unsigned long segment12_End = 10000000;  //"forever"
 
     //--------------------------------------------
     //  DEFINE FASTER TIME SEGMENTS FOR DEBUGGING
     // Be sure to comment out the variables above!
     //--------------------------------------------
-    
+
     //time for each segment
-    int d = 5000;
-    
+    int d = 6000;
+
     unsigned long segment0_End  = d * 1;
     unsigned long segment1_End  = d * 2;
     unsigned long segment2_End  = d * 3;
@@ -360,11 +353,7 @@ void loop() {
     unsigned long segment10_End = d * 11;
     unsigned long segment11_End = d * 12;
     unsigned long segment12_End = d * 13;
-    unsigned long segment13_End = d * 14;
-    unsigned long segment14_End = d * 15;
-    unsigned long segment15_End = d * 16;
-    unsigned long segment16_End = d * 17;
-    unsigned long segment17_End = 10000000;
+    unsigned long segment13_End = 10000000;
 
 
     //time since starting the animation PLUS the intentional delay
@@ -372,20 +361,20 @@ void loop() {
 
     bool bDelaying;
 
-    if( millis() - animationStartTime < startDelay ){
+    if ( millis() - animationStartTime < startDelay ) {
       bDelaying = true;
     } else {
       bDelaying = false;
     }
 
-    
-    if( bDelaying ){
+
+    if ( bDelaying ) {
       timeNow = 0;
       Serial.println("Delaying start...");
     } else {
-      timeNow = millis() - animationStartTime - startDelay;      
+      timeNow = millis() - animationStartTime - startDelay;
     }
-    
+
 
 
 
@@ -395,7 +384,7 @@ void loop() {
       //turn off all other effects
       allEffectsOff();
 
-      if( !bDelaying ) Serial.println("[Segment0] waiting with indicator");
+      if ( !bDelaying ) Serial.println("[Segment0] waiting with indicator");
 
       float indicatorBrightness = 0.1; //out of one
 
@@ -409,12 +398,11 @@ void loop() {
       //Strip #1, LED # 33
       //if we're in the delay period, light RED
       //if we're in the actual segment0 period, light GREEN
-      if( bDelaying ){
-        stripList[1].setColorAt(33, 255 * indicatorBrightness, 0, 0);  
+      if ( bDelaying ) {
+        stripList[1].setColorAt(33, 255 * indicatorBrightness, 0, 0);
       } else {
         stripList[1].setColorAt(33, 255 * indicatorBrightness, 255 * indicatorBrightness, 0);
       }
-      
 
     }
 
@@ -424,32 +412,10 @@ void loop() {
       //turn off all other effects
       allEffectsOff();
 
-      Serial.println("[Segment1] Fade In & Out");
-
-      //All LEDs fade up from 0 to 50% brightness
-      bSineWave = true;
-      sineSpeed = 0.02;
-
-      //range of brightness
-      sineLowBright = 0.05;
-      sineHighBright = 0.6;
-
-      sineColor[0] = orange[0];
-      sineColor[1] = orange[1];
-      sineColor[2] = orange[2];
-
-    }
-
-    //--------------------SEGMENT 2--------------------
-    else if ( timeNow < segment2_End ) {
-
-      //turn off all other effects
-      allEffectsOff();
-
-      Serial.println("[Segment2] Slow traveling wave");
+      Serial.println("[Segment1] Slow traveling wave");
 
       bTravelWave = true;
-      travelSineSpeed = 0.07;
+      travelSineSpeed = 0.09;
 
       //range of brightness
       travelLowBright = 0.0;
@@ -460,35 +426,41 @@ void loop() {
       //(value of 50 is not equal to 50 waves)
       travelPhaseDiff = 50;
 
-      travelColor[0] = orange[0];
-      travelColor[1] = orange[1];
-      travelColor[2] = orange[2];
+      travelColor[0] = lightBlue[0];
+      travelColor[1] = lightBlue[1];
+      travelColor[2] = lightBlue[2];
+
+    }
+
+    //--------------------SEGMENT 2--------------------
+    else if ( timeNow < segment2_End ) {
+
+      Serial.println("[Segment2] 4 Pulses moving up");
+
+      startPulse();
+
+      pulseSpeed = 4;
+      pulseBrightness = 0.4;
+
+      pulseColor[0] = lightBlue[0];
+      pulseColor[1] = lightBlue[1];
+      pulseColor[2] = lightBlue[2];
 
     }
 
     //--------------------SEGMENT 3--------------------
     else if ( timeNow < segment3_End ) {
 
-      //turn off all other effects
-      allEffectsOff();
+      Serial.println("[Segment3] 4 Pulses moving up");
 
-      Serial.println("[Segment3] Slow traveling wave");
+      startPulse();
 
-      bTravelWave = true;
-      travelSineSpeed = 0.07;
+      pulseSpeed = 3;
+      pulseBrightness = 0.7;
 
-      //range of brightness
-      travelLowBright = 0.0;
-      travelHighBright = 0.8;
-
-      //density of waves
-      //correlated but not equal to num waves
-      //(value of 50 is not equal to 50 waves)
-      travelPhaseDiff = 50;
-
-      travelColor[0] = orange[0];
-      travelColor[1] = orange[1];
-      travelColor[2] = orange[2];
+      pulseColor[0] = lightBlue[0];
+      pulseColor[1] = lightBlue[1];
+      pulseColor[2] = lightBlue[2];
 
 
     }
@@ -496,16 +468,15 @@ void loop() {
     //--------------------SEGMENT 4--------------------
     else if ( timeNow < segment4_End ) {
 
-      Serial.println("[Segment4] 4 Pulses moving up");
+      //turn off all other effects
+      allEffectsOff();
 
-      startPulse();
+      Serial.println("[segment4] All Off");
 
-      pulseSpeed = 3;
-      pulseBrightness = 0.8;
-
-      pulseColor[0] = orange[0];
-      pulseColor[1] = orange[1];
-      pulseColor[2] = orange[2];
+      //set all to black
+      for (int i = 0; i < NUMSTRIPS; i++) {
+        stripList[i].setAllColor(0, 0, 0);
+      }
 
     }
 
@@ -515,7 +486,129 @@ void loop() {
       //turn off all other effects
       allEffectsOff();
 
-      Serial.println("[Segment5] Glitch");
+      Serial.println("[Segment5] Fade In & Out");
+
+      //All LEDs fade up from 0 to 50% brightness
+      bSineWave = true;
+      sineSpeed = 0.02;
+
+      //range of brightness
+      sineLowBright = 0.05;
+      sineHighBright = 0.6;
+
+      sineColor[0] = lightBlue[0];
+      sineColor[1] = lightBlue[1];
+      sineColor[2] = lightBlue[2];
+      
+    }
+
+    //--------------------SEGMENT 6--------------------
+    else if ( timeNow < segment6_End ) {
+
+      Serial.println("[Segment6] 4 Pulses moving up");
+
+      startPulse();
+
+      pulseSpeed = 4;
+      pulseBrightness = 1.0;
+
+      pulseColor[0] = lightBlue[0];
+      pulseColor[1] = lightBlue[1];
+      pulseColor[2] = lightBlue[2];
+      
+    }
+
+    //--------------------SEGMENT 7--------------------
+    else if ( timeNow < segment7_End ) {
+
+      //turn off all other effects
+      allEffectsOff();
+
+      Serial.println("[Segment7] Slow traveling wave");
+
+      bTravelWave = true;
+      travelSineSpeed = 0.04;
+
+      //range of brightness
+      travelLowBright = 0.0;
+      travelHighBright = 1.0;
+
+      //density of waves
+      //correlated but not equal to num waves
+      //(value of 50 is not equal to 50 waves)
+      travelPhaseDiff = 50;
+
+      travelColor[0] = lightBlue[0];
+      travelColor[1] = lightBlue[1];
+      travelColor[2] = lightBlue[2];
+      
+    }
+
+    //--------------------SEGMENT 8--------------------
+    else if ( timeNow < segment8_End ) {
+
+      //turn off all other effects
+      allEffectsOff();
+
+      Serial.println("[Segment8] Slow traveling wave");
+
+      bTravelWave = true;
+      travelSineSpeed = 0.04;
+
+      //range of brightness
+      travelLowBright = 0.0;
+      travelHighBright = 0.75;
+
+      //density of waves
+      //correlated but not equal to num waves
+      //(value of 50 is not equal to 50 waves)
+      travelPhaseDiff = 50;
+
+      travelColor[0] = lightBlue[0];
+      travelColor[1] = lightBlue[1];
+      travelColor[2] = lightBlue[2];
+      
+    }
+
+    //-------------------SEGMENT 9--------------------
+    else if ( timeNow < segment9_End ) {
+
+      Serial.println("[Segment9] 4 Pulses moving up");
+
+      startPulse();
+
+      pulseSpeed = 3;
+      pulseBrightness = 1.0;
+
+      pulseColor[0] = lightBlue[0];
+      pulseColor[1] = lightBlue[1];
+      pulseColor[2] = lightBlue[2];
+      
+    }
+
+    //-------------------SEGMENT 10--------------------
+    else if ( timeNow < segment10_End ) {
+
+      Serial.println("[Segment10] 4 Pulses moving up");
+
+      startPulse();
+
+      pulseSpeed = 8;
+      pulseBrightness = 1.0;
+
+      pulseColor[0] = lightBlue[0];
+      pulseColor[1] = lightBlue[1];
+      pulseColor[2] = lightBlue[2];
+      
+    }
+
+    //-------------------SEGMENT 11--------------------
+    else if ( timeNow < segment11_End ) {
+
+      //turn off all other effects
+      allEffectsOff();
+
+      Serial.println("[Segment11] Glitch");
 
       //turn on flicker
       bFlicker = true;
@@ -536,159 +629,10 @@ void loop() {
 
       //manual set to white, one of the 4 color words
       //can be used also, as above
-      flickerColor2[0] = 255;
-      flickerColor2[1] = 255;
-      flickerColor2[2] = 255;
-
-    }
-
-    //--------------------SEGMENT 6--------------------
-    else if ( timeNow < segment6_End ) {
-
-      Serial.println("[Segment6] 4 Pulses moving up");
-
-      startPulse();
-
-      pulseSpeed = 1.5;
-      pulseBrightness = 0.8;
-
-      pulseColor[0] = orange[0];
-      pulseColor[1] = orange[1];
-      pulseColor[2] = orange[2];
-
-    }
-
-    //--------------------SEGMENT 7--------------------
-    else if ( timeNow < segment7_End ) {
-
-      //turn off all other effects
-      allEffectsOff();
-
-      Serial.println("[Segment7] Slow traveling wave");
-
-      bTravelWave = true;
-
-      //in this segment speed starts slow and ends high, so adjust the limits here
-      float startSpeed = 0.07;
-      float endSpeed = 0.2;
-
-      travelSineSpeed = map_clamp(timeNow, segment6_End, segment7_End, startSpeed, endSpeed);
-
-      //brightness also changes with time, so set the start and end brightnesses
-      float startBright = 0.5;
-      float endBright = 1.0;
-
-      travelHighBright = map_clamp(timeNow, segment6_End, segment7_End, startBright, endBright);
-      travelLowBright = 0.0;
-
-      travelColor[0] = orange[0];
-      travelColor[1] = orange[1];
-      travelColor[2] = orange[2];
-
-    }
-
-    //--------------------SEGMENT 8--------------------
-    else if ( timeNow < segment8_End ) {
-
-      //turn off all other effects
-      allEffectsOff();
-
-      Serial.println("[Segment8] Glitch");
-
-      //turn on flicker
-      bFlicker = true;
-
-      //set flicker characteristics
-      //range in time of flicker
-      shortFlickerInterval = 40;
-      longFlickerInterval = 120;
-
-      //range in brightness of flicker
-      lowFlickerBright = 0.30;
-      highFlickerBright = 0.75;
-
-      //set flicker color (0,1,2 = R,G,B)
-      flickerColor1[0] = orange[0];
-      flickerColor1[1] = orange[1];
-      flickerColor1[2] = orange[2];
-
       flickerColor2[0] = orange[0];
       flickerColor2[1] = orange[1];
       flickerColor2[2] = orange[2];
-
-    }
-
-    //-------------------SEGMENT 9--------------------
-    else if ( timeNow < segment9_End ) {
-
-      //turn off all other effects
-      allEffectsOff();
-
-      Serial.println("[Segment9] Slow traveling wave");
-
-      bTravelWave = true;
-      travelSineSpeed = 0.2;
-
-      //range of brightness
-      travelLowBright = 0.0;
-      travelHighBright = 1.0;
-
-      travelColor[0] = orange[0];
-      travelColor[1] = orange[1];
-      travelColor[2] = orange[2];
-
-    }
-
-    //-------------------SEGMENT 10--------------------
-    else if ( timeNow < segment10_End ) {
-
-      //turn off all other effects
-      allEffectsOff();
-
-      Serial.println("[Segment10] Slow traveling wave");
-
-      bTravelWave = true;
-      travelSineSpeed = 0.2;
-
-      //range of brightness
-      travelLowBright = 0.0;
-      travelHighBright = 1.0;
-
-      travelColor[0] = amber[0];
-      travelColor[1] = amber[1];
-      travelColor[2] = amber[2];
-
-    }
-
-    //-------------------SEGMENT 11--------------------
-    else if ( timeNow < segment11_End ) {
-
-      //turn off all other effects
-      allEffectsOff();
-
-      Serial.println("[Segment11] Glitch");
-
-      //turn on flicker
-      bFlicker = true;
-
-      //set flicker characteristics
-      //range in time of flicker
-      shortFlickerInterval = 10;
-      longFlickerInterval = 40;
-
-      //range in brightness of flicker
-      lowFlickerBright = 0.80;
-      highFlickerBright = 1.0;
-
-      //set flicker color (0,1,2 = R,G,B)
-      flickerColor1[0] = orange[0];
-      flickerColor1[1] = orange[1];
-      flickerColor1[2] = orange[2];
-
-      flickerColor2[0] = lightBlue[0];
-      flickerColor2[1] = lightBlue[1];
-      flickerColor2[2] = lightBlue[2];
-
+      
     }
 
     //-------------------SEGMENT 12--------------------
@@ -697,105 +641,7 @@ void loop() {
       //turn off all other effects
       allEffectsOff();
 
-      Serial.println("[segment12] All Off");
-
-      //set all to black
-      for (int i = 0; i < NUMSTRIPS; i++) {
-        stripList[i].setAllColor(0, 0, 0);
-      }
-
-    }
-
-    //-------------------SEGMENT 13--------------------
-    else if ( timeNow < segment13_End ) {
-
-      //turn off all other effects
-      allEffectsOff();
-
-      Serial.println("[Segment13] Traveling wave");
-
-      bTravelWave = true;
-      travelSineSpeed = 0.2;
-
-      //range of brightness
-      travelLowBright = 0.0;
-      travelHighBright = 0.8;
-
-      travelColor[0] = orange[0];
-      travelColor[1] = orange[1];
-      travelColor[2] = orange[2];
-
-    }
-
-    //-------------------SEGMENT 14--------------------
-    else if ( timeNow < segment14_End ) {
-
-      Serial.println("[Segment14] 4 Pulses moving down");
-
-      startPulse();
-
-      pulseSpeed = -3;   //negative speed to change direction
-      pulseBrightness = 1.0;
-
-    }
-
-    //-------------------SEGMENT 15--------------------
-    else if ( timeNow < segment15_End ) {
-
-      Serial.println("[Segment14] 4 Pulses moving opposite direction");
-
-      startPulse();
-
-      //speed changes in this segment so declare the start and end
-      float startSpeed = 3;
-      float endSpeed = 8;
-
-      pulseSpeed = map_clamp(timeNow, segment14_End, segment15_End, startSpeed, endSpeed);
-
-      pulseBrightness = 1.0;
-
-    }
-
-
-    //-------------------SEGMENT 16--------------------
-    else if ( timeNow < segment16_End ) {
-
-      //turn off all other effects
-      allEffectsOff();
-
-      Serial.println("[Segment16] Glitch");
-
-      //turn on flicker
-      bFlicker = true;
-
-      //set flicker characteristics
-      //range in time of flicker
-      shortFlickerInterval = 30;
-      longFlickerInterval = 100;
-
-      //range in brightness of flicker
-      lowFlickerBright = 0.50;
-      highFlickerBright = 0.75;
-
-      //set flicker color (0,1,2 = R,G,B)
-      flickerColor1[0] = orange[0];
-      flickerColor1[1] = orange[1];
-      flickerColor1[2] = orange[2];
-
-      //Set flickerColor2 to the same as 1
-      flickerColor2[0] = orange[0];
-      flickerColor2[1] = orange[1];
-      flickerColor2[2] = orange[2];
-
-    }
-
-    //-------------------SEGMENT 17--------------------
-    else if ( timeNow < segment17_End ) {
-
-      //turn off all other effects
-      allEffectsOff();
-
-      Serial.println("[Segment17] Fade In & Out");
+      Serial.println("[Segment12] Fade In & Out");
 
       //All LEDs fade up from 0 to 50% brightness
       bSineWave = true;
@@ -808,14 +654,12 @@ void loop() {
       sineColor[0] = orange[0];
       sineColor[1] = orange[1];
       sineColor[2] = orange[2];
-
+      
     }
 
 
 
   }
-
-
 
 
 
@@ -1019,7 +863,7 @@ void startPulse() {
 
     //turn off other effects
     allEffectsOff();
-    
+
     for (int i = 0; i < NUMSTRIPS; i++) {
       stripList[i].startPulseEvent();
     }

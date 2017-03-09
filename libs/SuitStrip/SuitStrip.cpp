@@ -18,9 +18,9 @@ SuitStrip::SuitStrip(int _id) {
 		redArray[i] = 0;
 		greenArray[i] = 0;
 		blueArray[i] = 0;
-		redTargets[i] = 0;
-		greenTargets[i] = 0;
-		blueTargets[i] = 0;
+		redOut[i] = 0;
+		greenOut[i] = 0;
+		blueOut[i] = 0;
 		// triggerStates[i] = false;
 		lastTriggerTimes[i] = 0;
 	}
@@ -80,9 +80,9 @@ SuitStrip::SuitStrip(int _id) {
 		greenArray[i] = 0;
 		blueArray[i] = 0;
 
-		redTargets[i] = 0;
-		greenTargets[i] = 0;
-		blueTargets[i] = 0;
+		redOut[i] = 0;
+		greenOut[i] = 0;
+		blueOut[i] = 0;
 
 		// triggerStates[i] = false;
 	}
@@ -125,6 +125,14 @@ void SuitStrip::startPulseEvent(){
 	bPulseEvent = true;
 
 
+	for(int i = 0; i < numLEDs; i++){
+		redArray[i] = 0;
+		greenArray[i] = 0;
+		blueArray[i] = 0;
+		redOut[i] = 0;
+		greenOut[i] = 0;
+		blueOut[i] = 0;
+	}
 	// for(int i = 0; i < numLEDs; i++){
 	// 	triggerStates[i] = false;
 	// }
@@ -157,64 +165,27 @@ void SuitStrip::updateVals() {
 				redArray[i] = getLerped(redArray[i], 0, fadeDownSpeed);
 				greenArray[i] = getLerped(greenArray[i], 0, fadeDownSpeed);
 				blueArray[i] = getLerped(blueArray[i], 0, fadeDownSpeed);
+
+				redOut[i] = redArray[i];
+				greenOut[i] = greenArray[i];
+				blueOut[i] = blueArray[i];	
 			}
-
-
-
-
 
 		} 
 
-		// else {
 
-		// 	timeNow = millis() - animationStart;
+	} else {
 
-		// 	float lerpSpeed;
+		//lerp all the out colors to their targets
+		float lerpSpeed = 0.2;
+		for(int i = 0; i < numLEDs; i++){
+			redOut[i] = getLerped(redOut[i], redArray[i], lerpSpeed);
+			greenOut[i] = getLerped(greenOut[i], greenArray[i], lerpSpeed);
+			blueOut[i] = getLerped(blueOut[i], blueArray[i], lerpSpeed);
+		}
 
-		// 	if(timeNow < 3000){
+	}
 
-		// 		rTarget = map_clamp(timeNow, 0, 2000, 0.0, 255.0);
-		// 		gTarget = map_clamp(timeNow, 0, 2000, 0.0, 255.0);
-		// 		bTarget = map_clamp(timeNow, 0, 2000, 0.0, 255.0);
-
-		// 		//go through and fade them all up
-		// 		for(int i = 0; i < numLEDs; i++){
-
-		// 			redArray[i] = rTarget;
-		// 			greenArray[i] = gTarget;
-		// 			blueArray[i] = bTarget;
-
-		// 		}
-
-		// 		// lerpSpeed = 0.01;
-
-
-		// 	} else if(timeNow < 6000){
-
-		// 		rTarget = map_clamp(timeNow, 3000, 5000, 255.0, 0.0);
-		// 		gTarget = map_clamp(timeNow, 3000, 5000, 255.0, 0.0);
-		// 		bTarget = map_clamp(timeNow, 3000, 5000, 255.0, 0.0);
-
-		// 		//go through and fade them all up
-		// 		for(int i = 0; i < numLEDs; i++){
-
-		// 			redArray[i] = rTarget;
-		// 			greenArray[i] = gTarget;
-		// 			blueArray[i] = bTarget;
-
-		// 		}
-
-		// 	} else {
-		// 		animationStart = millis();
-		// 	}
-			
-		// }
-
-
-
-
-
-	} //dummy mode end
 
 
 
@@ -225,7 +196,7 @@ void SuitStrip::updateVals() {
 
 int SuitStrip::getRed(int i){  
 	if(i >= 0 && i < numLEDs){
-	 	return redArray[i] * brightnessPct;
+	 	return redOut[i] * brightnessPct;
 	} else {
 		return -1;
 	}
@@ -233,7 +204,7 @@ int SuitStrip::getRed(int i){
 
 int SuitStrip::getGreen(int i){
 if(i >= 0 && i < numLEDs){
-	 	return greenArray[i] * brightnessPct;
+	 	return greenOut[i] * brightnessPct;
 	} else {
 		return -1;
 	}
@@ -241,7 +212,7 @@ if(i >= 0 && i < numLEDs){
 
 int SuitStrip::getBlue(int i){
 if(i >= 0 && i < numLEDs){
-	 	return blueArray[i] * brightnessPct;
+	 	return blueOut[i] * brightnessPct;
 	} else {
 		return -1;
 	}
